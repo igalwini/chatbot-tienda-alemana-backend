@@ -1,33 +1,83 @@
-# Chatbot Tienda Alemana Backend
+# Chatbot Tienda Alemana – Backend (FastAPI)
 
-Este proyecto implementa un backend en **FastAPI** para exponer un sistema de soporte automatizado de la Tienda Alemana. Utiliza un pipeline RAG construido con LangChain, embeddings de `sentence-transformers` y un índice FAISS para recuperar información relevante. El modelo de lenguaje se ejecuta localmente mediante Ollama con el modelo `mistral`.
+Este proyecto implementa un backend en **FastAPI** que expone un servicio inteligente de soporte al cliente para la Tienda Alemana. El sistema está basado en la arquitectura **RAG (Retrieval-Augmented Generation)** y permite responder preguntas frecuentes como ubicación de productos, precios y horarios de sucursales.
 
-## Estructura
+Internamente, utiliza:
+
+- **LangChain** para orquestar el pipeline.
+- **FAISS** como índice vectorial.
+- **HuggingFace Embeddings** para representación semántica.
+- **Ollama** con el modelo local `mistral` para generar respuestas.
+
+## 📁 Estructura del proyecto
 
 ```
 app/
 ├── main.py          # Punto de entrada del servidor
-├── rag_pipeline.py  # Carga del FAISS y generación de respuestas
-├── models.py        # Esquemas Pydantic
-└── config.py        # Configuración
-vector_store/        # Índice FAISS previamente generado (no incluido)
-requirements.txt     # Dependencias
+├── rag_pipeline.py  # Lógica del pipeline RAG
+├── models.py        # Esquemas Pydantic para input/output
+├── config.py        # Configuración centralizada
+vector_store/        # Índice FAISS (debe generarse desde notebooks)
+requirements.txt     # Lista de dependencias
 ```
 
-## Uso
+## ⚙️ Cómo ejecutar
 
-1. Crear un entorno virtual y activar.
-2. Instalar dependencias:
+1. Clonar este repositorio
+2. Crear y activar un entorno virtual
+3. Instalar dependencias:
    ```bash
    pip install -r requirements.txt
    ```
-3. Ejecutar el servidor:
+4. Asegurarse de tener el directorio `vector_store/` generado y ubicado en la raíz del proyecto
+5. Iniciar el modelo en Ollama:
+   ```bash
+   ollama run mistral
+   ```
+6. Levantar el servidor FastAPI:
    ```bash
    uvicorn app.main:app --reload
    ```
-4. Hacer solicitudes POST a `http://localhost:8000/ask` con un cuerpo JSON:
-   ```json
-   { "question": "¿Dónde está el arroz de 1kg?" }
-   ```
 
-El servicio responderá con una cadena generada por el modelo.
+## 📡 API disponible
+
+### `POST /ask`
+
+- **Request JSON**
+```json
+{ "question": "¿Dónde está el arroz de 1kg?" }
+```
+
+- **Response JSON**
+```json
+{ "answer": "El arroz de 1kg se encuentra en la góndola 5, sección Almacén." }
+```
+
+## 🧪 Ejemplo con `curl`
+
+```bash
+curl -X POST http://localhost:8000/ask \
+     -H "Content-Type: application/json" \
+     -d '{"question": "¿Qué productos hay en la góndola 2?"}'
+```
+
+---
+
+> 📌 **Importante:** El backend no funcionará si no se incluye el directorio `vector_store/` generado desde los notebooks, ni si el modelo `mistral` no está corriendo en Ollama.
+
+---
+
+## 📦 requirements.txt
+
+```txt
+fastapi
+uvicorn
+langchain
+langchain-community
+langchain-huggingface
+langchain-ollama
+sentence-transformers
+faiss-cpu
+pydantic
+tiktoken
+```
