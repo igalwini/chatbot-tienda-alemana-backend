@@ -4,10 +4,12 @@ Este proyecto implementa un backend en **FastAPI** que expone un servicio inteli
 
 Internamente, utiliza:
 
-- **LangChain** para orquestar el pipeline.
-- **FAISS** como índice vectorial.
-- **HuggingFace Embeddings** para representación semántica.
-- **Ollama** con el modelo local `mistral` para generar respuestas.
+* **LangChain** para orquestar el pipeline.
+* **FAISS** como índice vectorial.
+* **HuggingFace Embeddings** para representación semántica.
+* **Ollama** con el modelo local `mistral` para generar respuestas.
+
+> ⚠️ Requiere Python 3.10 o superior.
 
 ## 📁 Estructura del proyecto
 
@@ -23,18 +25,22 @@ requirements.txt     # Lista de dependencias
 
 ## ⚙️ Cómo ejecutar
 
-1. Clonar este repositorio
-2. Crear y activar un entorno virtual
+1. Clonar este repositorio.
+2. Crear y activar un entorno virtual.
 3. Instalar dependencias:
+
    ```bash
    pip install -r requirements.txt
    ```
-4. Asegurarse de tener el directorio `vector_store/` generado y ubicado en la raíz del proyecto
+4. Generar el índice FAISS ejecutando los notebooks en el directorio `notebooks/`.
+   El archivo generado (`vector_store/`) debe copiarse a la raíz del backend.
 5. Iniciar el modelo en Ollama:
+
    ```bash
    ollama run mistral
    ```
 6. Levantar el servidor FastAPI:
+
    ```bash
    uvicorn app.main:app --reload
    ```
@@ -43,12 +49,14 @@ requirements.txt     # Lista de dependencias
 
 ### `POST /ask`
 
-- **Request JSON**
+* **Request JSON**
+
 ```json
 { "question": "¿Dónde está el arroz de 1kg?" }
 ```
 
-- **Response JSON**
+* **Response JSON**
+
 ```json
 { "answer": "El arroz de 1kg se encuentra en la góndola 5, sección Almacén." }
 ```
